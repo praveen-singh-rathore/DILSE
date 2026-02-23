@@ -1,3 +1,4 @@
+const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const session = require('express-session');
@@ -7,7 +8,13 @@ const bcrypt = require('bcryptjs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const db = new Database(path.join(__dirname, 'data', 'app.db'));
+const dataDir = path.join(__dirname, 'data');
+
+if (!fs.existsSync(dataDir)) {
+  fs.mkdirSync(dataDir, { recursive: true });
+}
+
+const db = new Database(path.join(dataDir, 'app.db'));
 
 const categories = [
   { key: 'KNOWLEDGE', label: 'Knowledge' },
@@ -102,7 +109,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({ extended: true }));
 app.use(
   session({
-    store: new SQLiteStore({ db: 'sessions.db', dir: path.join(__dirname, 'data') }),
+    store: new SQLiteStore({ db: 'sessions.db', dir: dataDir }),
     secret: process.env.SESSION_SECRET || 'dev-super-app-secret',
     resave: false,
     saveUninitialized: false,

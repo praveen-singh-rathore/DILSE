@@ -3,10 +3,21 @@
 A full-stack, multi-tenant web platform for development and social-sector users to launch and organize tools in one personalized dashboard.
 
 ## Stack
-- Node.js + Express
+- Node.js + Express (recommended Node 20 LTS)
 - EJS server-rendered frontend
 - SQLite database (`better-sqlite3`)
 - Session auth (`express-session` + SQLite session store)
+
+
+## Recommended runtime
+Use **Node.js 20 LTS** for best compatibility.
+
+With nvm:
+```bash
+nvm install 20
+nvm use 20
+node -v
+```
 
 ## Features
 - Landing page with:
@@ -88,3 +99,23 @@ The SQLite DB is auto-created at `data/app.db` and sessions at `data/sessions.db
 ## Notes
 - URLs open in a new browser tab from tool tiles.
 - This v1 intentionally omits self-signup and advanced RBAC.
+
+## Troubleshooting
+
+### `zsh: command not found: #`
+This happens when copying comment lines (starting with `#`) directly into terminal. It is harmless.
+
+### `Cannot open database because the directory does not exist`
+This is fixed in the latest code. If you still see it, create the folder manually once:
+```bash
+mkdir -p data
+npm start
+```
+
+### Engine warnings on Node 16
+If npm shows `EBADENGINE` warnings, switch to Node 20:
+```bash
+nvm install 20
+nvm use 20
+```
+
