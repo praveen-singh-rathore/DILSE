@@ -1,0 +1,56 @@
+<%- include('partials/header', { title: 'Home Dashboard', isGuest }) %>
+<% if (isGuest) { %>
+  <div class="guest-banner">You are browsing as a guest. Changes are only saved for this session.</div>
+<% } %>
+
+<div class="categories-grid">
+  <% categories.forEach((category) => { %>
+    <section class="card category-card">
+      <div class="category-head">
+        <h2><%= category.label %></h2>
+        <button type="button" class="small-btn" onclick="togglePanel('<%= category.key %>')">+</button>
+      </div>
+
+      <% if (selectedByCategory[category.key].length === 0) { %>
+        <p class="muted">No tools selected yet. Use + to add tools.</p>
+      <% } %>
+
+      <div class="tool-grid">
+        <% selectedByCategory[category.key].forEach((tool) => { %>
+          <a class="tool-tile" href="<%= tool.url %>" target="_blank" rel="noopener noreferrer">
+            <span class="icon"><%= tool.icon || tool.name.charAt(0).toUpperCase() %></span>
+            <span>
+              <strong><%= tool.name %></strong>
+              <small><%= tool.description %></small>
+            </span>
+          </a>
+        <% }) %>
+      </div>
+
+      <div id="panel-<%= category.key %>" class="selection-panel hidden">
+        <form method="post" action="/home/category/<%= category.key %>/select" class="form-grid">
+          <h3>Add tools for <%= category.label %></h3>
+          <% activeToolsByCategory[category.key].forEach((tool) => { %>
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                name="toolIds"
+                value="<%= tool.id %>"
+                <%= selectedByCategory[category.key].find((t) => t.id === tool.id) ? 'checked' : '' %>
+              />
+              <span><%= tool.icon || '🔗' %> <strong><%= tool.name %></strong> — <%= tool.description %></span>
+            </label>
+          <% }) %>
+          <button type="submit">Save selection</button>
+        </form>
+      </div>
+    </section>
+  <% }) %>
+</div>
+
+<script>
+  function togglePanel(category) {
+    document.getElementById(`panel-${category}`).classList.toggle('hidden');
+  }
+</script>
+<%- include('partials/footer') %>

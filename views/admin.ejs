@@ -1,0 +1,63 @@
+<%- include('partials/header', { title: 'Admin Dashboard', isGuest: false }) %>
+<section class="card">
+  <h2>Admin Tool Management</h2>
+  <p>Create, edit, deactivate, or delete tools available to users and guests.</p>
+
+  <form method="get" action="/admin" class="inline-filter">
+    <label>Filter by category:
+      <select name="category">
+        <option value="">All categories</option>
+        <% categories.forEach((category) => { %>
+          <option value="<%= category.key %>" <%= filterCategory === category.key ? 'selected' : '' %>><%= category.label %></option>
+        <% }) %>
+      </select>
+    </label>
+    <button type="submit">Apply</button>
+  </form>
+
+  <h3>Create New Tool</h3>
+  <% if (error) { %><p class="error"><%= error %></p><% } %>
+  <form method="post" action="/admin/tools" class="form-grid">
+    <label>Name <input type="text" name="name" value="<%= formData?.name || '' %>" required /></label>
+    <label>Category
+      <select name="category" required>
+        <% categories.forEach((category) => { %>
+          <option value="<%= category.key %>" <%= formData?.category === category.key ? 'selected' : '' %>><%= category.label %></option>
+        <% }) %>
+      </select>
+    </label>
+    <label>URL <input type="url" name="url" value="<%= formData?.url || '' %>" required /></label>
+    <label>Description <textarea name="description" required><%= formData?.description || '' %></textarea></label>
+    <label>Icon / Emoji <input type="text" name="icon" value="<%= formData?.icon || '' %>" /></label>
+    <button type="submit">Create Tool</button>
+  </form>
+</section>
+
+<section class="card">
+  <h3>Existing Tools</h3>
+  <div class="admin-list">
+    <% tools.forEach((tool) => { %>
+      <article class="admin-item">
+        <form method="post" action="/admin/tools/<%= tool.id %>/update" class="form-grid">
+          <label>Name <input type="text" name="name" value="<%= tool.name %>" required /></label>
+          <label>Category
+            <select name="category" required>
+              <% categories.forEach((category) => { %>
+                <option value="<%= category.key %>" <%= tool.category === category.key ? 'selected' : '' %>><%= category.label %></option>
+              <% }) %>
+            </select>
+          </label>
+          <label>URL <input type="url" name="url" value="<%= tool.url %>" required /></label>
+          <label>Description <textarea name="description" required><%= tool.description %></textarea></label>
+          <label>Icon <input type="text" name="icon" value="<%= tool.icon || '' %>" /></label>
+          <label class="checkbox-label"><input type="checkbox" name="isActive" <%= tool.is_active ? 'checked' : '' %> /> Active</label>
+          <button type="submit">Save Changes</button>
+        </form>
+        <form method="post" action="/admin/tools/<%= tool.id %>/delete" onsubmit="return confirm('Delete this tool?');">
+          <button type="submit" class="danger">Delete</button>
+        </form>
+      </article>
+    <% }) %>
+  </div>
+</section>
+<%- include('partials/footer') %>

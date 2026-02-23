@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+<header class="topbar">
+  <h1>DILSE Super App</h1>
+  <nav>
+    <% if (currentUser || isGuest) { %>
+      <a href="/home">Home</a>
+    <% } %>
+    <% if (currentUser && currentUser.role === 'admin') { %>
+      <a href="/admin">Admin</a>
+    <% } %>
+    <% if (currentUser || isGuest) { %>
+      <form method="post" action="/logout" class="inline-form">
+        <button type="submit" class="linkish">Log out</button>
+      </form>
+    <% } %>
+  </nav>
+</header>
+<main class="container">
